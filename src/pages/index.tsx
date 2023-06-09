@@ -5,6 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
 import Button from "~/components/Button";
+import { todoInput } from "~/types";
 import { api, type RouterOutputs } from "~/utils/api";
 
 type Todo = RouterOutputs["todo"]["getAll"][number];
@@ -94,10 +95,9 @@ const TodoForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await createTodo({
-        title,
-        content,
-      });
+      const todo = { title, content };
+      todoInput.parse(todo);
+      await createTodo(todo);
       setTitle("");
       setContent("");
     } catch (error) {
