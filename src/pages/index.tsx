@@ -4,6 +4,7 @@ import { type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
+import { z } from "zod";
 import Button from "~/components/Button";
 import { todoInput } from "~/types";
 import { api, type RouterOutputs } from "~/utils/api";
@@ -85,6 +86,7 @@ const AuthShowcase: React.FC = () => {
 const TodoForm: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [error, setError] = useState("");
   const trpc = api.useContext();
   const { mutateAsync: createTodo } = api.todo.createPost.useMutation({
     onSettled: async () => {
@@ -101,7 +103,17 @@ const TodoForm: React.FC = () => {
       setTitle("");
       setContent("");
     } catch (error) {
-      console.error(error);
+      if (error instanceof z.ZodError) {
+        if (error.issues?.length > 0) {
+          let errorMessage = "";
+          error.issues.forEach((issue) => {
+            errorMessage += issue.message;
+          });
+          setError(errorMessage);
+        }
+      } else {
+        console.error(error);
+      }
     }
   };
 
@@ -122,6 +134,7 @@ const TodoForm: React.FC = () => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
+      {error && <div className="text-red-500">{error}</div>}
       <Button
         className="bg-amber-200 transition hover:animate-bounce hover:bg-amber-100"
         type="submit"
