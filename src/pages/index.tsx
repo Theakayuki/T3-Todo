@@ -4,7 +4,7 @@ import { type NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
-import { z } from "zod";
+import { ZodError } from "zod";
 import Button from "~/components/Button";
 import { todoInput } from "~/types";
 import { api, type RouterOutputs } from "~/utils/api";
@@ -86,7 +86,7 @@ const AuthShowcase: React.FC = () => {
 const TodoForm: React.FC = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>();
   const trpc = api.useContext();
   const { mutateAsync: createTodo } = api.todo.createPost.useMutation({
     onSettled: async () => {
@@ -102,19 +102,10 @@ const TodoForm: React.FC = () => {
       await createTodo(todo);
       setTitle("");
       setContent("");
+      setError(undefined);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        if (error.issues?.length > 0) {
-          let errorMessage = "";
-          error.message.split(" ").forEach((word) => {
-            if (word.startsWith('"')) {
-              errorMessage += word.replace('"', "");
-            }
-          });
-          setError(errorMessage);
-        }
-      } else {
-        console.error(error);
+      if (error instanceof ZodError) {
+        setError(error.issues[0]?.message);
       }
     }
   };
