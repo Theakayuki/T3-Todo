@@ -28,7 +28,7 @@ export const todoRouter = createTRPCRouter({
         completed,
         createdAt,
       }))
-      .sort((a, b) => a.createdAt.getDate() - b.createdAt.getDate());
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
     return cleanedTodos;
   }),
