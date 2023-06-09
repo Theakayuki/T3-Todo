@@ -59,7 +59,7 @@ const MainPage: React.FC = () => {
         This is a fullstack todo app built with Next.js, React, Tailwind,
         Prisma, and TRPC.
       </p>
-      <p className="text-center text-white">
+      <p className="mb-4 text-center text-white">
         Please sign in to start creating todos
       </p>
     </>
@@ -71,7 +71,7 @@ const AuthShowcase: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center px-4 md:mx-12 md:flex-row">
-      <p className="text-center text-2xl text-orange-950 dark:text-slate-300">
+      <p className="mb-4 text-center text-2xl text-orange-950 dark:text-slate-300 md:mb-0">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
       </p>
       <Button
