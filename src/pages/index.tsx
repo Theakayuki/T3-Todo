@@ -106,8 +106,10 @@ const TodoForm: React.FC = () => {
       if (error instanceof z.ZodError) {
         if (error.issues?.length > 0) {
           let errorMessage = "";
-          error.issues.forEach((issue) => {
-            errorMessage += issue.message;
+          error.message.split(" ").forEach((word) => {
+            if (word.startsWith('"')) {
+              errorMessage += word.replace('"', "");
+            }
           });
           setError(errorMessage);
         }
