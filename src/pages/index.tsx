@@ -98,6 +98,8 @@ const TodoForm: React.FC = () => {
         title,
         content,
       });
+      setTitle("");
+      setContent("");
     } catch (error) {
       console.error(error);
     }
